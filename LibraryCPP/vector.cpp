@@ -1,75 +1,35 @@
-#include<cstdlib>
-#include<stdlib.h>
-#include"vector.h"
+#include <stdlib.h>
+#include "vector.h"
 
 struct Vector
 {
-	Data* data;
-	size_t size;
-	size_t reservedSize;
 };
 
-Vector* vector_create()
+Vector *vector_create()
 {
-	Vector* vector = new Vector;
-	vector->data = new Data[0];
-	vector->reservedSize = 0;
-	vector->size = 0;
-	return vector;
+    return new Vector;
 }
 
-void vector_delete(Vector* vector)
+void vector_delete(Vector *vector)
 {
-	delete[] vector->data;
-	delete vector;
+    // TODO: free vector internals
+    delete vector; 
 }
 
-Data vector_get(const Vector* vector, size_t index)
+Data vector_get(const Vector *vector, size_t index)
 {
-	return vector->data[index];
+    return (Data)0;
 }
 
-void vector_set(Vector* vector, size_t index, Data value)
+void vector_set(Vector *vector, size_t index, Data value)
 {
-	if (index < vector->size)
-		vector->data[index] = value;
-	else
-	{
-		if (index < vector->reservedSize)
-		{
-			vector->size = vector->reservedSize;
-			vector->data[index] = value;
-		}
-		else
-		{
-			vector->size = index;
-			vector_resize(vector, index + vector->reservedSize);
-			vector->data[index] = value;
-		}
-	}
 }
 
-size_t vector_size(const Vector* vector)
+size_t vector_size(const Vector *vector)
 {
-	return vector->size;
+    return 0;
 }
 
-void vector_resize(Vector* vector, size_t size)
+void vector_resize(Vector *vector, size_t size)
 {
-	if (size < vector->reservedSize)
-	{
-		vector->size = size;
-	}
-	else {
-		size_t newSize = size * 2;
-		Data* newVector = new Data[newSize];
-		for (int i = 0; i < vector->size; i++)
-		{
-			newVector[i] = vector->data[i];
-		}
-		delete[] vector->data;
-		vector->data = newVector;
-		vector->size = size;
-		vector->reservedSize = newSize;
-	}
 }

@@ -1,43 +1,46 @@
 #include <stdlib.h>
 #include "stack.h"
+#include "list.h"
 #include <iostream>
-#include "stack.h"
-#include "vector.h"
+
 struct Stack
 {
-	Vector* vect;
+	List* list;
 };
 
 Stack *stack_create()
 {
 	Stack* stack = new Stack;
-	stack->vect = vector_create();
+	stack->list = list_create();
 	return stack;
 }
 
 void stack_delete(Stack *stack)
 {
-	vector_delete(stack->vect);
+	list_delete(stack->list);
 	delete stack;
 }
 
 void stack_push(Stack *stack, Data data)
 {
-	vector_resize(stack->vect, vector_size(stack->vect) + 1);
-	vector_set(stack->vect, vector_size(stack->vect) - 1, data);
+	list_insert(stack->list, data);
 }
 
 Data stack_get(const Stack *stack)
 {
-	return vector_get(stack->vect, vector_size(stack->vect) - 1);
+	return list_item_data(list_first(stack->list));
 }
 
-void stack_pop(Stack* stack)
+void stack_pop(Stack *stack)
 {
-	vector_resize(stack->vect, vector_size(stack->vect) - 1);
+	if (list_first(stack->list) != NULL)
+		list_erase(stack->list, list_first(stack->list));
 }
 
-		bool stack_empty(const Stack * stack)
-	{
-		return vector_size(stack->vect) == 0 ;
-	}
+bool stack_empty(const Stack *stack)
+{
+	if (list_first(stack->list) == NULL)
+		return true;
+	else
+		return false;
+}
