@@ -1,9 +1,9 @@
 *.opensdf
 *.sdf
-*.src
-*.Task
-*.ace554
-*.Test List CPP
+*/src/*
+*/Task/*
+*/ace554/*
+*/Test List CPP/*
 *.suo
 *.user
 *.filters
