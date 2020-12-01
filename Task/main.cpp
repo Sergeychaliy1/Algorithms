@@ -1,103 +1,55 @@
-﻿#include <iostream>
-#include "array.h"
-#include <stack.h>
-#include <fstream>
-#include <string>
+﻿// lab - двухмерный массив, в котором хранится лабиринт
+// n,m - количество строк и столбцов в массиве lab
+// si,sj - начальная позиция
+// fi,fj - конечная позиция
 
-using namespace std;
+typedef struct point { int i, j; } point;
 
-int main()
+int di[4] = { -1, 0, 1,  0 };
+int dj[4] = { 0, 1, 0, -1 };
+ const int n = 6;
+ const int m = 5;
+int d[n][m];            // массив расстояний 
+int head, tail;          // указатели очереди
+point queue[n * m];       // очередь
+
+// обнуляем массив расстояний
+for (i = 0; i < n; i++)
 {
-	int  regist_a;
-	int  regist_b;
-	int  regist_c;
-	int  regist_d;
-	Stack* stack = stack_create();
-	ifstream fileln;
-	fileln.open("input.txt");
-	ofstream out;
-	out.open("output.txt");
-	if (!out.is_open() || !fileln.is_open())//ïðîâåðêà îòêðûòèÿ ôàéëà
-	{
-		cout << "error!" << endl;
-		fileln.close();
-		out.close();
-		return -1;
-	}
-	else
-	{
-		cout << "file open!" << endl;
-	}
-	return 0;
+    for (j = 0; j < m; j++)
+    {
+        d[i][j] = 0;
+        d[si][sj] = 1;          // расстояние до начальной клетки равно 1 
 
-	string str;
-	const string str_push = "PUSH";
-	const string str_pop = "POP";
-	string value;
-	value = "";
 
-	while (fileln.eof())
-	{
-		getline(fileln, str);//èçâëå÷åíèå ñòðîê
-		for (int i = 0; i < str.length() - str_push.length(); i++)
-		{
-			if (str.substr(i, str_push.length()) == str_push)
-			{
-				for (i += str_push.length() + 1, value = ""; str[i] != ' '; i++)
-				{
-					value.push_back(str[i]);
+    // инициализируем очередь
+        head = tail = 0;
+        queue[tail].i = si;
+        queue[tail++].j = sj;   // заносим в очередь начальную клетку
+    }
 
-				}			
-				switch (value.front())
-				{
-					case 'A':
-						stack_push(stack, regist_a);
-						break;
-					case 'B':
-						stack_push(stack, regist_b);
-						break;
-					case 'C':
-						stack_push(stack, regist_c);
-						break;
-					case 'D':
-						stack_push(stack, regist_d);
-						break;
-					default:
-						stack_push(stack, atoi(value.c_str()));
-				}
-			}
-	        else if (str.substr(i, str_pop.length()) == str_pop)
-			{
-				i += str_pop.length() + 1;
-				switch (str[i])
-				{
-					case 'A':
-						regist_a = stack_get(stack);
-						break;
-					case 'B':
-						regist_b = stack_get(stack);
-						break;
-					case 'C':
-						regist_c = stack_get(stack);
-						break;
-					case 'D':
-						regist_d = stack_get(stack);
-						break;
-				}
-			}
-
-			if (out.is_open())
-			{
-				getline(std::cin, str);
-			}
-			if (out.is_open()) {
-				cout << "A=" << regist_a;
-				cout << "B=" << regist_b;
-				cout << "C=" << regist_c;
-				cout << "D=" << regist_d;
-			}
-		}
-	}
-	fileln.close();//îñâîáîæäåíèå ðåñóðñîâ
-	return 0;
+    while (head < tail)     // цикл пока очередь не пуста
+    {
+        point p = queue[head++];          // берем следующую позицию из очереди
+        for (int k = 0; k < 4; k++)       // цикл по соседним клеткам
+        {
+            point newp;
+            newp.i = p.i + di[k];
+            newp.j = p.j + dj[k];
+            // проверяем, что такая клетка есть
+            if (0 <= newp.i && newp.i < n && 0 <= newp.j && newp.j < m)
+                // проверяем, что она свободна и ранее ее не посещали
+                if (lab[newp.i][newp.j] != '#' && d[newp.i][newp.j] == 0)
+                {
+                    d[newp.i][newp.j] = d[p.i][p.j] + 1;     // находим расстояние 
+                    queue[tail++] = newp;                    // заносим позицию в очередь
+                }
+        }
+    }
 }
+
+
+if (d[fi][fj])
+printf("расстояние = %d\n", d[fi][fj]);
+else
+printf("нет ни одного пути");
